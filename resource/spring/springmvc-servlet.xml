@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- default-autowire="byType"  当本文件内都是需要自动注入时，可以统一在beans标签进行设置属性 -->
+<beans  xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+   
+	
+	
+	
+	<!--  注解扫描-->
+	<context:component-scan base-package="cn.bdqn.controller"></context:component-scan>
+	
+	  <mvc:resources location="/statics/" mapping="/statics/**"></mvc:resources>
+       
+	
+      <mvc:annotation-driven>
+       	<mvc:message-converters>
+       		<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+       			<property name="supportedMediaTypes">
+       				<list>
+       					<value>application/json;charset=UTF-8</value>
+       				</list>
+       			</property>
+       		</bean>
+       	</mvc:message-converters>
+       </mvc:annotation-driven>
+	
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+</beans>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="cn.bdqn.dao.AppInfoMapper">
+  
+  <!-- 获取字典分类 -->
+  <!-- List<DataDictionary> getDictionaryList(@Param("typeName")String typeName); -->
+  <select id="getDictionaryList" resultType="DataDictionary">
+  	select
+  		id,valueName
+  	from
+  		data_dictionary
+  	where
+  		typeName = #{typeName}
+  </select>
+  <!-- 查询app分类 -->
+  <!-- List<AppCategory> getCategoryList(Integer level); -->
+  <select id="getCategoryList" resultType="AppCategory">
+  	select
+  		id,categoryName,parentId
+  	from 
+  		app_category
+  	where parentId
+  	<if test="level == 0">
+  		is null
+  	</if>
+  	<if test="level > 0">
+  		= #{level}
+  	</if>
+  </select>
+  
+  
+  <!-- List<AppInfo> getAppList(AppInfo appInfo); -->
+<!-- querySoftwareName,queryFlatformId,queryCategoryLevel1,categorylevel2list,queryCategoryLevel3, -->
+
+<select id="getAppList" parameterType="map" resultType="AppInfo">
+select 
+		i.id,i.softwareName,i.APKName,i.softwareSize,
+		(select da.valueName from data_dictionary da where typeName = '所属平台' and i.flatformId = da.valueId) as flatformName,
+		i.categoryLevel1,i.categoryLevel2,i.categoryLevel3,i.downloads,
+		(select da.valueName from data_dictionary da where typeName='APP状态' and i.flatformId = da.valueId) as statusName,
+		(select v.versionNo from app_version v where v.id	= i.versionId)as versionNo
+	FROM
+		app_info i
+	<where>
+	<trim prefix="and">
+	<if test="softwareName != null and softwareName != ''">
+		i.softwareName like CONCAT('%',#{appInfo.softwareName},'%')
+	</if>
+	<if test="flatformId > 0">
+		and i.flatformId = #{appInfo.flatformId}
+	</if>
+	<if test="categoryLevel1 > 0">
+		and categoryLevel1  = #{appInfo.categoryLevel1}
+	</if>
+	<if test="categoryLevel2 > 0">
+		and categoryLevel2  = #{appInfo.categoryLevel2}
+	</if>
+		<if test="categoryLevel3 > 0">
+		and categoryLevel3  = #{appInfo.categoryLevel3}
+	</if>
+	</trim>
+	</where>
+	limit #{index},#{pageSize}
+</select>
+
+
+
+<!--   <select id="getAppList" resultType="AppInfo" parameterType="map">
+  select i.id,i.softwareName,i.APKName,i.supportROM,i.interfaceLanguage,i.softwareSize,
+  i.updateDate,i.devId,i.appInfo,i.status,i.onSaleDate,i.offSaleDate,i.flatformId,
+  i.categoryLevel3,i.downloads,i.createdBy,i.creationDate,i.modifyBy,i.modifyDate,
+  i.categoryLevel1,i.categoryLevel2,i.logoPicPath,i.logoLocPath,i.versionId,
+(select a.valueName from data_dictionary a where i.`status`=a.valueId and a.typeName='APP状态') as statusName,
+(select b.valueName from data_dictionary b where i.flatformId=b.valueId and b.typeName='所属平台') as flatformName,
+(select c.versionNo from app_version c where i.versionId=c.id ) as versionNo
+  from app_info i
+<where>
+	<if test="softwareName!=null">
+		softwareName=#{appInfo.softwareName}
+	</if>
+	<if test="flatformId > 0">
+		and flatformId=#{appInfo.flatformId}
+	</if>
+	<if test="categoryLevel1 > 0">
+		and categoryLevel1=#{appInfo.categoryLevel1}
+	</if>
+	<if test="categoryLevel2 > 0">
+		and categoryLevel2=#{appInfo.categoryLevel2}
+	</if>
+	<if test="categoryLevel3 > 0">
+		and categoryLevel3=#{appInfo.categoryLevel3}
+	</if>
+</where>
+limit #{index},#{pageSize}
+  </select> -->
+  
+  <!-- int getApps(AppInfo appInfo); -->
+  <select id="getApps" resultType="_int" parameterType="AppInfo">
+  select count(1) from app_info
+  <where>
+	<if test="softwareName!=null and softwareName!=''" >
+		softwareName=#{softwareName}
+	</if>
+	<if test="flatformId>0">
+		and flatformId=#{flatformId}
+	</if>
+	<if test="categoryLevel1>0">
+		and categoryLevel1=#{categoryLevel1}
+	</if>
+	<if test="categoryLevel2>0">
+		and categoryLevel2=#{categoryLevel2}
+	</if>
+	<if test="categoryLevel3>0">
+		and categoryLevel3=#{categoryLevel3}
+	</if>
+</where>
+ 
+  </select>
+  
+  
+  
+  </mapper>

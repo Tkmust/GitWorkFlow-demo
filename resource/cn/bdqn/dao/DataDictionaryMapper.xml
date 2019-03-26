@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="cn.bdqn.dao.DataDictionaryMapper">
+  
+  <!-- 获取字典分类 -->
+  <!-- List<DataDictionary> getDictionaryList(@Param("typeName")String typeName); -->
+  <select id="getDictionaryList" resultType="DataDictionary">
+  	select
+  		id,valueName
+  	from
+  		data_dictionary
+  	where
+  		typeName = #{typeName}
+  </select>
+  </mapper>
